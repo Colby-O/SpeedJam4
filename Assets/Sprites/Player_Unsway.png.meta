@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f8f0ffa6977859d428338e5eb1bf99ec
+guid: 141271fa60ac3174fa7ac7368fd2fb71
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Player_Walking_0
+      name: Player_Unsway_0
       rect:
         serializedVersion: 2
         x: 0
@@ -124,14 +124,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d607e655bdab5b846955a0446d2b1cf5
-      internalID: 770347226
+      spriteID: a5f92800b27df584085c602d645c0a89
+      internalID: -200638489
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player_Walking_1
+      name: Player_Unsway_1
       rect:
         serializedVersion: 2
         x: 32
@@ -145,14 +145,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bd674ea7d5d68814486ba2fadf287b02
-      internalID: 809715003
+      spriteID: c3837205644dfb143880b670823fab73
+      internalID: -284508955
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player_Walking_2
+      name: Player_Unsway_2
       rect:
         serializedVersion: 2
         x: 64
@@ -166,14 +166,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 90fa877889228ae448e807399e5de533
-      internalID: -62536128
+      spriteID: 16e33e4b60547a9488fdd8a770bdbb6a
+      internalID: 1906305980
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player_Walking_3
+      name: Player_Unsway_3
       rect:
         serializedVersion: 2
         x: 96
@@ -187,14 +187,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2e41f62b1a36efb41a4226e1f008ec59
-      internalID: 152818729
+      spriteID: b84ef1d3271e52a43801a4684f9d22c8
+      internalID: -1290011162
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player_Walking_4
+      name: Player_Unsway_4
       rect:
         serializedVersion: 2
         x: 128
@@ -208,14 +208,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ff61eabbc60064244bd42654a88c924e
-      internalID: -83516815
+      spriteID: 39f014801e1712d469886000245a4016
+      internalID: 984397482
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player_Walking_5
+      name: Player_Unsway_5
       rect:
         serializedVersion: 2
         x: 160
@@ -229,14 +229,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 79bf7ed962d75764e809469354a3a1c4
-      internalID: -167046978
+      spriteID: ac7512c30ff36884b8f09fd2a8e87fde
+      internalID: -1004004729
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player_Walking_6
+      name: Player_Unsway_6
       rect:
         serializedVersion: 2
         x: 192
@@ -250,14 +250,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 24f1b7ff186451c4a86dfae6f8b7bc17
-      internalID: 1233111838
+      spriteID: dde15800f92d72f4daa05f345c466957
+      internalID: -1646035678
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player_Walking_7
+      name: Player_Unsway_7
       rect:
         serializedVersion: 2
         x: 224
@@ -271,8 +271,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: eae38d13b3d83c24a8ec819367a26b0b
-      internalID: -75789871
+      spriteID: 37b95e0a2e021684b8889fb9afcadc1c
+      internalID: 1675722248
       vertices: []
       indices: 
       edges: []
@@ -288,14 +288,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Player_Walking_0: 770347226
-      Player_Walking_1: 809715003
-      Player_Walking_2: -62536128
-      Player_Walking_3: 152818729
-      Player_Walking_4: -83516815
-      Player_Walking_5: -167046978
-      Player_Walking_6: 1233111838
-      Player_Walking_7: -75789871
+      Player_Unsway_0: -200638489
+      Player_Unsway_1: -284508955
+      Player_Unsway_2: 1906305980
+      Player_Unsway_3: -1290011162
+      Player_Unsway_4: 984397482
+      Player_Unsway_5: -1004004729
+      Player_Unsway_6: -1646035678
+      Player_Unsway_7: 1675722248
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

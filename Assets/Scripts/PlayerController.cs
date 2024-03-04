@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private BoxCollider2D _coll;
     [SerializeField] private PlayerInput _playerInput;
+    [SerializeField] private Animator _anim;
 
     private InputAction _moveAction;
     private InputAction _jumpAction;
@@ -118,6 +119,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        _anim = GetComponent<Animator>();
         _coll = GetComponent<BoxCollider2D>();
         _rb = GetComponent<Rigidbody2D>();
         _playerInput = GetComponent<PlayerInput>();
@@ -134,6 +136,9 @@ public class PlayerController : MonoBehaviour
     {
         _isGrounded = IsGrounded();
         _force = new Vector2(_rawMovementInput.x * _moveSpeed, _rb.velocity.y);
+
+         _anim.SetBool("IsWalking", Mathf.Abs(_force.x) > 0.01f);
+
         WallSlide();
         WallJump();
         if (!_isWallJumping)
