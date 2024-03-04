@@ -56,16 +56,21 @@ public class GameManager : MonoBehaviour
 	
 	public void OpenPauseMenu()
 	{
-		_playerHUD.SetActive(false);
+        Cursor.lockState = CursorLockMode.Confined;
+        _playerHUD.SetActive(false);
 		_pauseMenu.SetActive(true);
-	}
+
+        _player.gameObject.GetComponent<PlayerController>().SetPaused(true);
+    }
 
 	public void ClosePauseMenu()
 	{
-		_playerHUD.SetActive(true);
+        Cursor.lockState = CursorLockMode.Locked;
+        _playerHUD.SetActive(true);
 		_pauseMenu.SetActive(false);
 
-	}
+		_player.gameObject.GetComponent<PlayerController>().SetPaused(false);
+    }
 
 	public void StopSound()
 	{
@@ -101,7 +106,8 @@ public class GameManager : MonoBehaviour
 	
 	public void RestartCurrentLevel()
 	{
-		_player.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+        _player.IsDead = false;
+        _player.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
 		_player.gameObject.GetComponent<SpriteRenderer>().material.SetFloat("_DissolveAmount", 0.0f);
 		_levels[_currentLevel].StartLevel(_player);
 		if (_player.GotBalloon)
@@ -109,7 +115,7 @@ public class GameManager : MonoBehaviour
 			_player.DecreaseBallonCount();
 			_player.GotBalloon = false;
 		}
-	}
+    }
 
 	public void NextLevel()
 	{
@@ -122,7 +128,8 @@ public class GameManager : MonoBehaviour
 
 	public void Play()
 	{
-		_username = _usernameField.text;
+        Cursor.lockState = CursorLockMode.Locked;
+        _username = _usernameField.text;
 
 		_mainMenu.SetActive(false);
 		_settingsMenu.SetActive(false);
@@ -148,7 +155,8 @@ public class GameManager : MonoBehaviour
 
 	public void Signup()
 	{
-		_mainGame.SetActive(false);
+        Cursor.lockState = CursorLockMode.Confined;
+        _mainGame.SetActive(false);
 		_playerHUD.SetActive(false);
 
 		_mainMenu.SetActive(false);
@@ -160,7 +168,8 @@ public class GameManager : MonoBehaviour
 	}
 	public void OpenOverview()
 	{
-		_playerHUD.SetActive(false);
+        Cursor.lockState = CursorLockMode.Confined;
+        _playerHUD.SetActive(false);
 
 		_mainMenu.SetActive(false);
 		_settingsMenu.SetActive(false);
@@ -172,7 +181,8 @@ public class GameManager : MonoBehaviour
 
 	public void OpenLeaderboards()
 	{
-		_mainGame.SetActive(false);
+        Cursor.lockState = CursorLockMode.Confined;
+        _mainGame.SetActive(false);
 		_playerHUD.SetActive(false);
 
 		_mainMenu.SetActive(false);
@@ -187,7 +197,10 @@ public class GameManager : MonoBehaviour
 
 	public void OpenMainMenu()
 	{
-		_mainGame.SetActive(false);
+		if (_player.IsDead) return;
+
+        Cursor.lockState = CursorLockMode.Confined;
+        _mainGame.SetActive(false);
 		_playerHUD.SetActive(false);
 
 		_mainMenu.SetActive(true);
@@ -200,6 +213,7 @@ public class GameManager : MonoBehaviour
 
 	public void OpenSettings()
 	{
+		Cursor.lockState = CursorLockMode.Confined;
 		_mainGame.SetActive(false);
 		_playerHUD.SetActive(false);
 
@@ -220,7 +234,9 @@ public class GameManager : MonoBehaviour
 
 	public void Awake()
 	{
-		_audioPlayer = GetComponent<AudioSource>();
+        Cursor.lockState = CursorLockMode.Confined;
+
+        _audioPlayer = GetComponent<AudioSource>();
 		_player =FindAnyObjectByType<PlayerManager>();
 
 		_mainMenu.SetActive(true);

@@ -45,6 +45,8 @@ public class PlayerController : MonoBehaviour
 
     private bool _isPaused = false;
 
+    public void SetPaused(bool isPaused) => _isPaused = isPaused;
+
     private bool IsGrounded()
     {
         return Physics2D.BoxCast(_coll.bounds.center, _coll.bounds.size - new Vector3(0.05f, 0.0f, 0.0f), 0.0f, Vector2.down, 0.1f, _jumpableGroundLayer)
@@ -155,8 +157,6 @@ public class PlayerController : MonoBehaviour
         {
             if (_isPaused) _gameManager.ClosePauseMenu();
             else _gameManager.OpenPauseMenu();
-
-            _isPaused = !_isPaused;
         };
     }
 

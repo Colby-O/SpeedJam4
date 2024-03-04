@@ -65,7 +65,7 @@ public class LeaderBoards : MonoBehaviour
         int childCount = viewport.transform.childCount;
         for (int j = 1; j < childCount; j++)
         {
-            Destroy(viewport.transform.GetChild(1).gameObject);
+            DestroyImmediate(viewport.transform.GetChild(1).gameObject);
         }
 
         viewport.sizeDelta = new Vector2(0, 32 + entries.Count * 15);
@@ -77,8 +77,12 @@ public class LeaderBoards : MonoBehaviour
             RectTransform rt = go.GetComponent<RectTransform>();
             rt.anchoredPosition = new Vector3(0, -32 - i * 15, 0);
 
+            string mins = (entry.time / 60).ToString();
+            string secs = (entry.time % 60).ToString();
+            if (secs.Length == 1) secs = "0" + secs;
+
             go.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = entry.name;
-            go.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = entry.time.ToString();
+            go.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = $"{mins}:{secs}";
             go.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = entry.balloons.ToString();
             i++;
         }

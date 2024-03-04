@@ -20,6 +20,8 @@ public class PlayerManager : MonoBehaviour
 
     public bool GotBalloon;
 
+    public bool IsDead = false;
+
     private IEnumerator Dissolve()
     {
         Material playerMat = transform.GetComponent<SpriteRenderer>().material;
@@ -59,6 +61,7 @@ public class PlayerManager : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Lava") || collision.gameObject.CompareTag("Trap"))
         {
+            IsDead = true;
             if (collision.gameObject.CompareTag("Lava"))
             {
                 _gameManager.PlaySound(0);
