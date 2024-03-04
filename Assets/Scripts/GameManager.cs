@@ -146,7 +146,9 @@ public class GameManager : MonoBehaviour
 
 		_timer.ResetTimer();
 
-		if (_levels.Count > 0) {
+		foreach (Level level in _levels) level.gameObject.SetActive(false);
+
+        if (_levels.Count > 0) {
 			Level l = GetCurrentLevel();
 			l.gameObject.SetActive(true);
 			l.StartLevel(_player);
