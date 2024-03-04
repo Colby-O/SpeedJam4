@@ -79,7 +79,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -1936740478, guid: b38caacd7b71e52448a12221d4ffd2e7, type: 3}
+  m_Sprite: {fileID: -1150221522, guid: b4c5b04bce108b8428e4d7004d18be82, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 1
@@ -87,7 +87,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &6196224702941421270
@@ -170,7 +170,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.23}
+  m_Offset: {x: 0.000018417835, y: 0.23501804}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -181,7 +181,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.7, y: 0.52}
+  m_Size: {x: 0.6874529, y: 0.5300359}
   m_EdgeRadius: 0
 --- !u!114 &3996656443705136140
 MonoBehaviour:
@@ -241,14 +241,6 @@ MonoBehaviour:
   _wallLayer:
     serializedVersion: 2
     m_Bits: 128
-  _force: {x: 0, y: 0}
-  _isGrounded: 0
-  _isFacingRight: 0
-  _isWallSliding: 0
-  _canWallJump: 0
-  _wallJumpDirection: 0
-  _wallJumpCounter: 0
-  _lastTriedJump: 0
 --- !u!114 &8611018885621281925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -264,3 +256,4 @@ MonoBehaviour:
   _rb: {fileID: 0}
   _disolveTime: 100
   _balloonCountText: {fileID: 0}
+  GotBalloon: 0
