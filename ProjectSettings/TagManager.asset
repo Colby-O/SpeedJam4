@@ -7,6 +7,8 @@ TagManager:
   - Lava
   - Key
   - Balloon
+  - Door
+  - Button
   layers:
   - Default
   - TransparentFX
@@ -16,7 +18,7 @@ TagManager:
   - UI
   - JumpableGround
   - Wall
-  - 
+  - IgnorePhysics
   - 
   - 
   - 

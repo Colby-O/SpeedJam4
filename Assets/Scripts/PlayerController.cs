@@ -41,10 +41,11 @@ public class PlayerController : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return Physics2D.BoxCast(_coll.bounds.center, _coll.bounds.size, 0.0f, Vector2.down, 0.1f, _jumpableGroundLayer);
+        return Physics2D.BoxCast(_coll.bounds.center, _coll.bounds.size - new Vector3(0.05f, 0.0f, 0.0f), 0.0f, Vector2.down, 0.1f, _jumpableGroundLayer) || 
+            Physics2D.BoxCast(_coll.bounds.center, _coll.bounds.size - new Vector3(0.05f, 0.0f, 0.0f), 0.0f, Vector2.down, 0.1f, _jumpableGroundLayer);
     }
 
-    private bool isTouchingWall()
+    private bool IsTouchingWall()
     {
         return Physics2D.BoxCast(_coll.bounds.center, _coll.bounds.size, 0.0f, Vector2.right, 0.1f, _wallLayer) || 
             Physics2D.BoxCast(_coll.bounds.center, _coll.bounds.size, 0.0f, -Vector2.right, 0.1f, _wallLayer);
@@ -84,7 +85,7 @@ public class PlayerController : MonoBehaviour
 
     private void WallSlide()
     {
-        if (isTouchingWall() && !IsGrounded() && _force.x != 0.0f)
+        if (IsTouchingWall() && !IsGrounded() && _force.x != 0.0f)
         {
             _isWallSliding = true;
             _force = new Vector2(_force.x, Mathf.Clamp(_force.y, -_wallSlidingSpeed, float.MaxValue));
@@ -97,23 +98,25 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        if (_wallJumpCounter > 0.0f)
+        if (_wallJumpCounter > 0.0f && _wallJumpCounter != _wallJumpingTime)
         {
             _isWallJumping = true;
             _rb.velocity = new Vector2(_wallJumpDirection * _wallJumpingPower.x, _wallJumpingPower.y);
             _wallJumpCounter = 0.0f;
-        } 
-        else
-        {
-            _rb.velocity = IsGrounded() ? new Vector2(_rb.velocity.x, _jumpForce) : _rb.velocity;
-        }
 
-        if (transform.localScale.x != _wallJumpDirection)
+            if (transform.localScale.x != _wallJumpDirection)
+            {
+                _isFacingRight = !_isFacingRight;
+                Vector3 localScale = transform.localScale;
+                localScale.x *= -1;
+                transform.localScale = localScale;
+            }
+
+            Invoke(nameof(StopWallJump), _wallJumpDirection);
+        } 
+        else if (IsGrounded())
         {
-            _isFacingRight = !_isFacingRight;
-            Vector3 localScale = transform.localScale;
-            localScale.x *= -1;
-            transform.localScale = localScale;
+            _rb.velocity = new Vector2(_rb.velocity.x, _jumpForce);
         }
     }
 
@@ -137,7 +140,7 @@ public class PlayerController : MonoBehaviour
         _isGrounded = IsGrounded();
         _force = new Vector2(_rawMovementInput.x * _moveSpeed, _rb.velocity.y);
 
-         _anim.SetBool("IsWalking", Mathf.Abs(_force.x) > 0.01f);
+        _anim.SetBool("IsWalking", Mathf.Abs(_force.x) > 0.01f);
 
         WallSlide();
         WallJump();
