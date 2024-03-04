@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,11 +10,15 @@ public class PlayerManager : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private float _disolveTime = 100.0f;
+    [SerializeField] private TMP_Text _balloonCountText;
+
+    private GameManager _gameManager;
 
     private int _balloonCount = 0;
 
     private bool _atDoor = false;
-    private DoorManager _doorManager;
+
+    public bool GotBalloon;
 
     private IEnumerator Dissolve()
     {
@@ -24,19 +29,41 @@ public class PlayerManager : MonoBehaviour
             playerMat.SetFloat("_DissolveAmount", i);
             yield return null;
         }
+        _gameManager.RestartCurrentLevel();
     }
 
     private void Die()
     {
         _rb.bodyType = RigidbodyType2D.Static;
         Debug.Log("You have died!");
-        SceneManager.LoadScene(0);
+    }
+
+    public void DecreaseBallonCount()
+    {
+        _balloonCount--;
+        if (_balloonCountText != null) _balloonCountText.text = _balloonCount.ToString();
+    }
+
+    public int GetNumberOfBalloons() 
+    { 
+        return _balloonCount; 
+    }
+
+    public void ResetNumberOfBalloons()
+    {
+        _balloonCount = 0;
+        if (_balloonCountText != null) _balloonCountText.text = _balloonCount.ToString();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Lava"))
+        if (collision.gameObject.CompareTag("Lava") || collision.gameObject.CompareTag("Trap"))
         {
+            if (collision.gameObject.CompareTag("Lava"))
+            {
+                _gameManager.PlaySound(0);
+            }
+            _gameManager.PlaySound(2);
             StartCoroutine(Dissolve());
             Die();
         }
@@ -50,18 +77,26 @@ public class PlayerManager : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Key"))
         {
-            _doorManager.Open();
-            Destroy(collision.gameObject);
+            _gameManager.GetCurrentLevel().gameObject.GetComponentInChildren<DoorManager>().Open();
+            collision.gameObject.SetActive(false);
+            _gameManager.PlaySound(4);
+            _gameManager.PlaySound(6);
         }
         else if (collision.gameObject.CompareTag("Balloon"))
         {
             _balloonCount += 1;
-            Destroy(collision.gameObject);
+            GotBalloon = true;
+            if (_balloonCountText != null) _balloonCountText.text = _balloonCount.ToString();
+            collision.gameObject.SetActive(false);
+            _gameManager.PlaySound(3);
         }
         else if (collision.gameObject.CompareTag("Button"))
         {
-            Debug.Log("Here!");
-            if (!collision.gameObject.GetComponent<ButtonManager>().IsPressed) collision.gameObject.GetComponent<ButtonManager>().Press();
+            if (!collision.gameObject.GetComponent<ButtonManager>().IsPressed)
+            {
+                collision.gameObject.GetComponent<ButtonManager>().Press();
+                _gameManager.PlaySound(5);
+            }
         }
     }
 
@@ -76,14 +111,17 @@ public class PlayerManager : MonoBehaviour
     private void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
-        _doorManager = FindObjectOfType<DoorManager>();
+        _gameManager = FindAnyObjectByType<GameManager>();
+
+        _balloonCount = 0;
+        if (_balloonCountText != null) _balloonCountText.text = _balloonCount.ToString();
     }
 
     private void Update()
     {
-        if (_atDoor && _doorManager.IsOpen)
+        if (_atDoor && _gameManager.GetCurrentLevel().gameObject.GetComponentInChildren<DoorManager>().IsOpen)
         {
-            Debug.Log("Go To Next Level");
+            _gameManager.NextLevel();
         }
     }
 }

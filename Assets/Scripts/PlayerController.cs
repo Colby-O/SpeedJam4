@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _wallSlidingSpeed = 2.0f;
     [SerializeField] private float _wallJumpingTime = 0.2f;
     [SerializeField] private float _wallJumpingDuration = 0.4f;
-    [SerializeField] private Vector2 _wallJumpingPower= new Vector2(8.0f, 16.0f);
+    [SerializeField] private Vector2 _wallJumpingPower = new Vector2(8.0f, 16.0f);
 
     [Header("References")]
     [SerializeField] private Rigidbody2D _rb;
@@ -22,32 +22,38 @@ public class PlayerController : MonoBehaviour
 
     private InputAction _moveAction;
     private InputAction _jumpAction;
+    private InputAction _pauseAction;
+
+    private GameManager _gameManager;
 
     [SerializeField] private LayerMask _jumpableGroundLayer;
     [SerializeField] private LayerMask _wallLayer;
 
     private Vector2 _rawMovementInput;
-    [SerializeField] private Vector2 _force;
+    private Vector2 _force;
 
-    [SerializeField] private bool _isGrounded;
+    private bool _isGrounded;
 
-    [SerializeField] private bool _isFacingRight;
+    private bool _isFacingRight;
 
-    [SerializeField] private bool _isWallSliding;
+    private bool _isWallSliding;
 
-    [SerializeField] private bool _isWallJumping;
-    [SerializeField] private float _wallJumpDirection;
-    [SerializeField] private float _wallJumpCounter;
+    private bool _canWallJump;
+    private float _wallJumpDirection;
+    private float _wallJumpCounter;
+    private float _lastTriedJump;
+
+    private bool _isPaused = false;
 
     private bool IsGrounded()
     {
-        return Physics2D.BoxCast(_coll.bounds.center, _coll.bounds.size - new Vector3(0.05f, 0.0f, 0.0f), 0.0f, Vector2.down, 0.1f, _jumpableGroundLayer) || 
-            Physics2D.BoxCast(_coll.bounds.center, _coll.bounds.size - new Vector3(0.05f, 0.0f, 0.0f), 0.0f, Vector2.down, 0.1f, _jumpableGroundLayer);
+        return Physics2D.BoxCast(_coll.bounds.center, _coll.bounds.size - new Vector3(0.05f, 0.0f, 0.0f), 0.0f, Vector2.down, 0.1f, _jumpableGroundLayer)
+            || Physics2D.BoxCast(_coll.bounds.center, _coll.bounds.size - new Vector3(0.05f, 0.0f, 0.0f), 0.0f, Vector2.down, 0.1f, _wallLayer);
     }
 
     private bool IsTouchingWall()
     {
-        return Physics2D.BoxCast(_coll.bounds.center, _coll.bounds.size, 0.0f, Vector2.right, 0.1f, _wallLayer) || 
+        return Physics2D.BoxCast(_coll.bounds.center, _coll.bounds.size, 0.0f, Vector2.right, 0.1f, _wallLayer) ||
             Physics2D.BoxCast(_coll.bounds.center, _coll.bounds.size, 0.0f, -Vector2.right, 0.1f, _wallLayer);
     }
 
@@ -62,66 +68,78 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void StopWallJump()
+    private void BlockWallJump()
     {
-        _isWallJumping = false;
-    }
-
-    private void WallJump()
-    {
-        if (_isWallSliding)
-        {
-            _isWallJumping = false;
-            _wallJumpDirection = -transform.localScale.x;
-            _wallJumpCounter = _wallJumpingTime;
-
-            CancelInvoke(nameof(StopWallJump));
-        } 
-        else
-        {
-            _wallJumpCounter -= Time.deltaTime;
-        }
+        _canWallJump = false;
+        _wallJumpCounter = 0.0f;
+        Debug.Log("STOP");
     }
 
     private void WallSlide()
     {
-        if (IsTouchingWall() && !IsGrounded() && _force.x != 0.0f)
+        if (IsTouchingWall() && !_isGrounded && _rawMovementInput.x != 0.0f)
         {
-            _isWallSliding = true;
-            _force = new Vector2(_force.x, Mathf.Clamp(_force.y, -_wallSlidingSpeed, float.MaxValue));
-        } 
-        else
+            if (!_isWallSliding)
+            {
+                _canWallJump = false;
+                _wallJumpDirection = -transform.localScale.x;
+                _wallJumpCounter = _wallJumpingTime;
+                _isWallSliding = true;
+                CancelInvoke(nameof(BlockWallJump));
+            }
+        }
+        else if (_isWallSliding)
         {
             _isWallSliding = false;
+            if (Time.time < _lastTriedJump + _wallJumpingDuration)
+            {
+                _lastTriedJump -= _wallJumpingDuration * 2;
+                DoJump();
+            }
+            else
+            {
+                CancelInvoke(nameof(BlockWallJump));
+                Invoke(nameof(BlockWallJump), _wallJumpingDuration);
+            }
+        }
+    }
+
+    private void DoJump()
+    {
+        _canWallJump = true;
+        _rb.velocity = new Vector2(_wallJumpDirection * _wallJumpingPower.x, _wallJumpingPower.y);
+        _wallJumpCounter = 0.0f;
+
+        if (transform.localScale.x != _wallJumpDirection)
+        {
+            _isFacingRight = !_isFacingRight;
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1;
+            transform.localScale = localScale;
         }
     }
 
     private void Jump()
     {
+        if (!_isGrounded)
+        {
+            _lastTriedJump = Time.time;
+        }
         if (_wallJumpCounter > 0.0f && _wallJumpCounter != _wallJumpingTime)
         {
-            _isWallJumping = true;
-            _rb.velocity = new Vector2(_wallJumpDirection * _wallJumpingPower.x, _wallJumpingPower.y);
-            _wallJumpCounter = 0.0f;
-
-            if (transform.localScale.x != _wallJumpDirection)
-            {
-                _isFacingRight = !_isFacingRight;
-                Vector3 localScale = transform.localScale;
-                localScale.x *= -1;
-                transform.localScale = localScale;
-            }
-
-            Invoke(nameof(StopWallJump), _wallJumpDirection);
-        } 
-        else if (IsGrounded())
+            DoJump();
+            _gameManager.PlaySound(1);
+        }
+        else if (_isGrounded)
         {
             _rb.velocity = new Vector2(_rb.velocity.x, _jumpForce);
+            _gameManager.PlaySound(1);
         }
     }
 
     private void Start()
     {
+        _gameManager = FindAnyObjectByType<GameManager>();
         _anim = GetComponent<Animator>();
         _coll = GetComponent<BoxCollider2D>();
         _rb = GetComponent<Rigidbody2D>();
@@ -129,22 +147,30 @@ public class PlayerController : MonoBehaviour
 
         _moveAction = _playerInput.actions["Movement"];
         _jumpAction = _playerInput.actions["Jump"];
+        _pauseAction = _playerInput.actions["Pause"];
 
         _moveAction.performed += e => _rawMovementInput = e.ReadValue<Vector2>();
         _jumpAction.performed += e => Jump();
+        _pauseAction.performed += e => 
+        {
+            if (_isPaused) _gameManager.ClosePauseMenu();
+            else _gameManager.OpenPauseMenu();
+
+            _isPaused = !_isPaused;
+        };
     }
 
 
     private void Update()
     {
         _isGrounded = IsGrounded();
-        _force = new Vector2(_rawMovementInput.x * _moveSpeed, _rb.velocity.y);
-
-        _anim.SetBool("IsWalking", Mathf.Abs(_force.x) > 0.01f);
-
+        if (_isGrounded)
+        {
+            _canWallJump = false;
+            _wallJumpCounter = 0.0f;
+        }
         WallSlide();
-        WallJump();
-        if (!_isWallJumping)
+        if (!_canWallJump)
         {
             Flip();
         }
@@ -152,6 +178,22 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        _isGrounded = IsGrounded();
+
+        _force = new Vector2(_rawMovementInput.x * _moveSpeed, _rb.velocity.y);
+
+        _anim.SetBool("IsWalking", Mathf.Abs(_force.x) > 0.01f);
+
+        if (!_isWallSliding)
+        {
+            _wallJumpCounter -= Time.deltaTime;
+        }
+
+        if (_isWallSliding)
+        {
+            _force = new Vector2(_force.x, Mathf.Clamp(_force.y, -_wallSlidingSpeed, float.MaxValue));
+        }
+
         _rb.velocity = _force;
     }
 }

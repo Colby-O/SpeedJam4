@@ -6,12 +6,12 @@ public class ValveManager : MonoBehaviour
 {
 
     [SerializeField] LavaManager _lavaManager;
+    private GameManager _gameManager;
 
     private void StopLavaFlow()
     {
         _lavaManager.StopLavaFlow();
         _lavaManager.StartLavaDrain();
-        Debug.Log("Level Completed!");
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -19,11 +19,13 @@ public class ValveManager : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             StopLavaFlow();
+            _gameManager.PlaySound(8);
         }
     }
 
     private void Start()
     {
+        _gameManager = FindAnyObjectByType<GameManager>();
         if (_lavaManager == null) _lavaManager = FindAnyObjectByType<LavaManager>();
     }
 }

@@ -26,6 +26,6 @@ public class HiddenObject : MonoBehaviour
     {
         _renderer = GetComponent<SpriteRenderer>();
         _coli = GetComponent<BoxCollider2D>();
-
+        Hide();
     }
 }
